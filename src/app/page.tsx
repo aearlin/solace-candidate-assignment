@@ -33,9 +33,9 @@ export default function Home() {
         advocate.city.toLowerCase().includes(searchTerms.city.toLowerCase()) &&
         advocate.degree.toLowerCase().includes(searchTerms.degree.toLowerCase()) &&
         advocate.specialties.some((spec) =>
-          spec.toLowerCase().includes(searchTerms.specialties.toLowerCase()) &&
+          spec.toLowerCase().includes(searchTerms.specialties.toLowerCase())
+        ) &&
         advocate.yearsOfExperience.toString().includes(searchTerms.yearsOfExperience)
-        )
       );
     });
     setFilteredAdvocates(filtered);
@@ -55,6 +55,7 @@ export default function Home() {
       city: "",
       degree: "",
       specialties: "",
+      yearsOfExperience: "",
     });
   };
 
@@ -68,18 +69,58 @@ export default function Home() {
       <h1>Solace Advocates</h1>
       <br />
       <br />
-      <div>
-        <p>Search Filters</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
-          <input placeholder="First Name" value={searchTerms.firstName} onChange={handleSearchChange("firstName")} />
-          <input placeholder="Last Name" value={searchTerms.lastName} onChange={handleSearchChange("lastName")} />
-          <input placeholder="City" value={searchTerms.city} onChange={handleSearchChange("city")} />
-          <input placeholder="Degree" value={searchTerms.degree} onChange={handleSearchChange("degree")} />
-          <input placeholder="Specialties" value={searchTerms.specialties} onChange={handleSearchChange("specialties")} />
-          <input placeholder="Years of Experience" value={searchTerms.yearsOfExperience} onChange={handleSearchChange("yearsOfExperience")} />
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Search Filters</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="First Name"
+            value={searchTerms.firstName}
+            onChange={handleSearchChange("firstName")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={searchTerms.lastName}
+            onChange={handleSearchChange("lastName")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="City"
+            value={searchTerms.city}
+            onChange={handleSearchChange("city")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Degree"
+            value={searchTerms.degree}
+            onChange={handleSearchChange("degree")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Specialties"
+            value={searchTerms.specialties}
+            onChange={handleSearchChange("specialties")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Years of Experience"
+            value={searchTerms.yearsOfExperience}
+            onChange={handleSearchChange("yearsOfExperience")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
         </div>
-        <br />
-        <button onClick={resetSearch}>Reset All</button>
+        <button
+          onClick={resetSearch}
+          className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Reset All
+        </button>
       </div>
       <br />
       <br />
