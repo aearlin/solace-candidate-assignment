@@ -16,25 +16,46 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
+  const [searchTerms, setSearchTerms] = useState({
+    firstName: "",
+    lastName: "",
+    city: "",
+    degree: "",
+    specialties: "",
+    yearsOfExperience: "",
+  });
+  
+  useEffect(() => {
+    const filtered = advocates.filter((advocate) => {
       return (
-        advocate.firstName.toLowerCase().includes(searchTerm) ||
-        advocate.lastName.toLowerCase().includes(searchTerm) ||
-        advocate.city.toLowerCase().includes(searchTerm) ||
-        advocate.degree.toLowerCase().includes(searchTerm) ||
+        advocate.firstName.toLowerCase().includes(searchTerms.firstName.toLowerCase()) &&
+        advocate.lastName.toLowerCase().includes(searchTerms.lastName.toLowerCase()) &&
+        advocate.city.toLowerCase().includes(searchTerms.city.toLowerCase()) &&
+        advocate.degree.toLowerCase().includes(searchTerms.degree.toLowerCase()) &&
         advocate.specialties.some((spec) =>
-          spec.toLowerCase().includes(searchTerm)
+          spec.toLowerCase().includes(searchTerms.specialties.toLowerCase()) &&
+        advocate.yearsOfExperience.toString().includes(searchTerms.yearsOfExperience)
         )
       );
     });
-
-    setFilteredAdvocates(filteredAdvocates);
+    setFilteredAdvocates(filtered);
+  }, [searchTerms, advocates]);
+  
+  const handleSearchChange = (field) => (e) => {
+    setSearchTerms((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+  
+  const resetSearch = () => {
+    setSearchTerms({
+      firstName: "",
+      lastName: "",
+      city: "",
+      degree: "",
+      specialties: "",
+    });
   };
 
   const onClick = () => {
@@ -48,12 +69,17 @@ export default function Home() {
       <br />
       <br />
       <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
+        <p>Search Filters</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
+          <input placeholder="First Name" value={searchTerms.firstName} onChange={handleSearchChange("firstName")} />
+          <input placeholder="Last Name" value={searchTerms.lastName} onChange={handleSearchChange("lastName")} />
+          <input placeholder="City" value={searchTerms.city} onChange={handleSearchChange("city")} />
+          <input placeholder="Degree" value={searchTerms.degree} onChange={handleSearchChange("degree")} />
+          <input placeholder="Specialties" value={searchTerms.specialties} onChange={handleSearchChange("specialties")} />
+          <input placeholder="Years of Experience" value={searchTerms.yearsOfExperience} onChange={handleSearchChange("yearsOfExperience")} />
+        </div>
+        <br />
+        <button onClick={resetSearch}>Reset All</button>
       </div>
       <br />
       <br />
