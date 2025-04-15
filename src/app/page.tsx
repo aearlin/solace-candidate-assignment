@@ -141,55 +141,44 @@ export default function Home() {
       </div>
       <br />
       <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            const key =
-              advocate.email ||
-              advocate.phoneNumber ||
-              `${advocate.firstName}-${advocate.lastName}`;
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 font-bold border-b pb-2">
+          <div>Advocate</div>
+          <div>Specialties</div>
+        </div>
 
-            return (
-              <React.Fragment key={key}>
-                <tr>
-                  <td colSpan={7}>
-                    <hr />
-                  </td>
-                </tr>
-                <tr>
-                  <td>{advocate.firstName}</td>
-                  <td>{advocate.lastName}</td>
-                  <td>{advocate.city}</td>
-                  <td>{advocate.degree}</td>
-                  <td>
-                    {advocate.specialties.map((s, i) => (
-                      <div key={`${key}-specialty-${i}`}>{s}</div>
-                    ))}
-                  </td>
-                  <td>{advocate.yearsOfExperience}</td>
-                  <td>{advocate.phoneNumber}</td>
-                </tr>
-                <tr>
-                  <td colSpan={7}>
-                    <hr />
-                  </td>
-                </tr>
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-      </table>
+        {filteredAdvocates.map((advocate) => (
+          <div
+            key={advocate.email || advocate.phoneNumber || `${advocate.firstName}-${advocate.lastName}`}
+            className="grid grid-cols-2 items-start border-b py-4"
+          >
+            <div className="space-y-1">
+              <div>
+                <strong>Name:</strong> {advocate.firstName} {advocate.lastName}, {advocate.degree}
+              </div>
+              <div>
+                <strong>City:</strong> {advocate.city}
+              </div>
+              <div>
+                <strong>Years of Experience:</strong> {advocate.yearsOfExperience}
+              </div>
+              <div>
+                <strong>Phone number:</strong> {advocate.phoneNumber}
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {advocate.specialties.map((s, index) => (
+                <span
+                  key={index}
+                  className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
