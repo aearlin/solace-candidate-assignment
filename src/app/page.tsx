@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
@@ -18,9 +18,9 @@ export default function Home() {
 
   const onChange = (e) => {
     const searchTerm = e.target.value.toLowerCase();
-  
+
     document.getElementById("search-term").innerHTML = searchTerm;
-  
+
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
       return (
@@ -33,7 +33,7 @@ export default function Home() {
         )
       );
     });
-  
+
     setFilteredAdvocates(filteredAdvocates);
   };
 
@@ -75,32 +75,33 @@ export default function Home() {
               advocate.email ||
               advocate.phoneNumber ||
               `${advocate.firstName}-${advocate.lastName}`;
+
             return (
-              <>
-                <tr key={`line-top-${key}`}>
+              <React.Fragment key={key}>
+                <tr>
                   <td colSpan={7}>
                     <hr />
                   </td>
                 </tr>
-                <tr key={key}>
+                <tr>
                   <td>{advocate.firstName}</td>
                   <td>{advocate.lastName}</td>
                   <td>{advocate.city}</td>
                   <td>{advocate.degree}</td>
                   <td>
-                    {advocate.specialties.map((s, index) => (
-                      <div key={index}>{s}</div>
+                    {advocate.specialties.map((s, i) => (
+                      <div key={`${key}-specialty-${i}`}>{s}</div>
                     ))}
                   </td>
                   <td>{advocate.yearsOfExperience}</td>
                   <td>{advocate.phoneNumber}</td>
                 </tr>
-                <tr key={`line-bottom-${key}`}>
+                <tr>
                   <td colSpan={7}>
                     <hr />
                   </td>
                 </tr>
-              </>
+              </React.Fragment>
             );
           })}
         </tbody>
