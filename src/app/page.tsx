@@ -22,12 +22,21 @@ export default function Home() {
     city: "",
     degree: "",
     specialties: "",
-    yearsOfExperience: "",
+    minYears: "",
+    maxYears: "",
   });
   
   useEffect(() => {
     const filtered = advocates.filter((advocate) => {
-      return (
+      const years = parseInt(advocate.yearsOfExperience, 10);
+      const min = parseInt(searchTerms.minYears, 10);
+      const max = parseInt(searchTerms.maxYears, 10);
+
+      const matchesYears =
+        (!min || years >= min) &&
+        (!max || years <= max);
+
+        return (
         advocate.firstName.toLowerCase().includes(searchTerms.firstName.toLowerCase()) &&
         advocate.lastName.toLowerCase().includes(searchTerms.lastName.toLowerCase()) &&
         advocate.city.toLowerCase().includes(searchTerms.city.toLowerCase()) &&
@@ -35,7 +44,7 @@ export default function Home() {
         advocate.specialties.some((spec) =>
           spec.toLowerCase().includes(searchTerms.specialties.toLowerCase())
         ) &&
-        advocate.yearsOfExperience.toString().includes(searchTerms.yearsOfExperience)
+        matchesYears
       );
     });
     setFilteredAdvocates(filtered);
@@ -55,7 +64,8 @@ export default function Home() {
       city: "",
       degree: "",
       specialties: "",
-      yearsOfExperience: "",
+      minYears: "",
+      maxYears: "",
     });
   };
 
@@ -71,7 +81,7 @@ export default function Home() {
       <br />
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Search Filters</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <input
             type="text"
             placeholder="First Name"
@@ -108,10 +118,17 @@ export default function Home() {
             className="border border-gray-300 rounded px-3 py-2"
           />
           <input
-            type="text"
-            placeholder="Years of Experience"
-            value={searchTerms.yearsOfExperience}
-            onChange={handleSearchChange("yearsOfExperience")}
+            type="number"
+            placeholder="Min Experience"
+            value={searchTerms.minYears}
+            onChange={handleSearchChange("minYears")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="number"
+            placeholder="Max Experience"
+            value={searchTerms.maxYears}
+            onChange={handleSearchChange("maxYears")}
             className="border border-gray-300 rounded px-3 py-2"
           />
         </div>
