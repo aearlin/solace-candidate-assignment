@@ -36,7 +36,7 @@ export default function Home() {
   
     setFilteredAdvocates(filteredAdvocates);
   };
-  
+
   const onClick = () => {
     console.log(advocates);
     setFilteredAdvocates(advocates);
@@ -71,20 +71,36 @@ export default function Home() {
         </thead>
         <tbody>
           {filteredAdvocates.map((advocate) => {
+            const key =
+              advocate.email ||
+              advocate.phoneNumber ||
+              `${advocate.firstName}-${advocate.lastName}`;
             return (
-              <tr key={advocate.email || advocate.phoneNumber || `${advocate.firstName}-${advocate.lastName}`}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s, index) => (
-                    <div key={index}>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
+              <>
+                <tr key={`line-top-${key}`}>
+                  <td colSpan={7}>
+                    <hr />
+                  </td>
+                </tr>
+                <tr key={key}>
+                  <td>{advocate.firstName}</td>
+                  <td>{advocate.lastName}</td>
+                  <td>{advocate.city}</td>
+                  <td>{advocate.degree}</td>
+                  <td>
+                    {advocate.specialties.map((s, index) => (
+                      <div key={index}>{s}</div>
+                    ))}
+                  </td>
+                  <td>{advocate.yearsOfExperience}</td>
+                  <td>{advocate.phoneNumber}</td>
+                </tr>
+                <tr key={`line-bottom-${key}`}>
+                  <td colSpan={7}>
+                    <hr />
+                  </td>
+                </tr>
+              </>
             );
           })}
         </tbody>
