@@ -69,9 +69,13 @@ export default function Home() {
     });
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+  const formatPhoneNumber = (phone: string) => {
+    const cleaned = ('' + phone).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return phone;
   };
 
   return (
@@ -163,7 +167,7 @@ export default function Home() {
                 <strong>Years of Experience:</strong> {advocate.yearsOfExperience}
               </div>
               <div>
-                <strong>Phone number:</strong> {advocate.phoneNumber}
+                <strong>Phone number:</strong> {formatPhoneNumber(advocate.phoneNumber)}
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
