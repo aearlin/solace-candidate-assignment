@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
@@ -16,30 +16,66 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
+  const [searchTerms, setSearchTerms] = useState({
+    firstName: "",
+    lastName: "",
+    city: "",
+    degree: "",
+    specialties: "",
+    minYears: "",
+    maxYears: "",
+  });
   
-    document.getElementById("search-term").innerHTML = searchTerm;
-  
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.toLowerCase().includes(searchTerm) ||
-        advocate.lastName.toLowerCase().includes(searchTerm) ||
-        advocate.city.toLowerCase().includes(searchTerm) ||
-        advocate.degree.toLowerCase().includes(searchTerm) ||
+  useEffect(() => {
+    const filtered = advocates.filter((advocate) => {
+      const years = parseInt(advocate.yearsOfExperience, 10);
+      const min = parseInt(searchTerms.minYears, 10);
+      const max = parseInt(searchTerms.maxYears, 10);
+
+      const matchesYears =
+        (!min || years >= min) &&
+        (!max || years <= max);
+
+        return (
+        advocate.firstName.toLowerCase().includes(searchTerms.firstName.toLowerCase()) &&
+        advocate.lastName.toLowerCase().includes(searchTerms.lastName.toLowerCase()) &&
+        advocate.city.toLowerCase().includes(searchTerms.city.toLowerCase()) &&
+        advocate.degree.toLowerCase().includes(searchTerms.degree.toLowerCase()) &&
         advocate.specialties.some((spec) =>
-          spec.toLowerCase().includes(searchTerm)
-        )
+          spec.toLowerCase().includes(searchTerms.specialties.toLowerCase())
+        ) &&
+        matchesYears
       );
     });
+    setFilteredAdvocates(filtered);
+  }, [searchTerms, advocates]);
   
-    setFilteredAdvocates(filteredAdvocates);
+  const handleSearchChange = (field) => (e) => {
+    setSearchTerms((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
   };
   
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+  const resetSearch = () => {
+    setSearchTerms({
+      firstName: "",
+      lastName: "",
+      city: "",
+      degree: "",
+      specialties: "",
+      minYears: "",
+      maxYears: "",
+    });
+  };
+
+  const formatPhoneNumber = (phone: string) => {
+    const cleaned = ('' + phone).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return phone;
   };
 
   return (
@@ -47,48 +83,106 @@ export default function Home() {
       <h1>Solace Advocates</h1>
       <br />
       <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Search Filters</h2>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <input
+            type="text"
+            placeholder="First Name"
+            value={searchTerms.firstName}
+            onChange={handleSearchChange("firstName")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={searchTerms.lastName}
+            onChange={handleSearchChange("lastName")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="City"
+            value={searchTerms.city}
+            onChange={handleSearchChange("city")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Degree"
+            value={searchTerms.degree}
+            onChange={handleSearchChange("degree")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            placeholder="Specialties"
+            value={searchTerms.specialties}
+            onChange={handleSearchChange("specialties")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="number"
+            placeholder="Min Experience"
+            value={searchTerms.minYears}
+            onChange={handleSearchChange("minYears")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="number"
+            placeholder="Max Experience"
+            value={searchTerms.maxYears}
+            onChange={handleSearchChange("maxYears")}
+            className="border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+        <button
+          onClick={resetSearch}
+          className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Reset All
+        </button>
       </div>
       <br />
       <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              <tr key={advocate.email || advocate.phoneNumber || `${advocate.firstName}-${advocate.lastName}`}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s, index) => (
-                    <div key={index}>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 font-bold border-b pb-2">
+          <div>Advocate</div>
+          <div>Specialties</div>
+        </div>
+
+        {filteredAdvocates.map((advocate) => (
+          <div
+            key={advocate.email || advocate.phoneNumber || `${advocate.firstName}-${advocate.lastName}`}
+            className="grid grid-cols-2 items-start border-b py-4"
+          >
+            <div className="space-y-1">
+              <div>
+                <strong>Name:</strong> {advocate.firstName} {advocate.lastName}, {advocate.degree}
+              </div>
+              <div>
+                <strong>City:</strong> {advocate.city}
+              </div>
+              <div>
+                <strong>Years of Experience:</strong> {advocate.yearsOfExperience}
+              </div>
+              <div>
+                <strong>Phone number:</strong> {formatPhoneNumber(advocate.phoneNumber)}
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {advocate.specialties.map((s, index) => (
+                <span
+                  key={index}
+                  className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
